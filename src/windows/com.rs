@@ -248,7 +248,16 @@ impl io::Write for COMPort {
             )
         } {
             0 => Err(io::Error::last_os_error()),
-            _ => Ok(len as usize),
+            _ => {
+                if len != 0 {
+                    Ok(len as usize)
+                } else {
+                    Err(io::Error::new(
+                        io::ErrorKind::TimedOut,
+                        "Operation timed out",
+                    ))
+                }
+            }
         }
     }
 
